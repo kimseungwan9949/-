@@ -5,10 +5,9 @@ import random
 st.set_page_config(page_title="TWO Y FIT 맞춤 루틴 생성기", layout="centered")
 st.image("two_y_fit_logo_transparent.png", width=200)
 st.title("TWO Y FIT 맞춤 루틴 생성기")
+st.caption("build: 2025-09-17-01")  # 배포 반영 확인용
 
-# -------------------------
-# 안내문 공통 함수
-# -------------------------
+# ----- 공통 안내 -----
 def show_notes(show_main_tip: bool = False):
     st.markdown("📌 운동 루틴 생성 후 순서는 그대로 해도 되고 바꿔도 상관 없습니다.")
     if show_main_tip:
@@ -17,9 +16,14 @@ def show_notes(show_main_tip: bool = False):
             unsafe_allow_html=True
         )
 
-# -------------------------
-# 운동 DB
-# -------------------------
+# ----- 이미지 출력 헬퍼 (여기만 쓰면 안전) -----
+def render_img(file: str, width: int = 150):
+    if os.path.exists(file):
+        st.image(file, width=width)
+    else:
+        st.warning("이미지 없음")
+
+# ----- 데이터베이스 -----
 routine_db = {
     "어깨": [
         ("오버헤드프레스", "오버헤드프레스.PNG"),
@@ -108,9 +112,7 @@ main_exercise = {
     "하체": "스쿼트"
 }
 
-# -------------------------
-# UI
-# -------------------------
+# ----- UI -----
 part = st.selectbox(
     "운동 부위 선택",
     ["어깨", "등", "가슴", "하체", "팔", "상체", "밀기", "당기기"],
@@ -126,10 +128,7 @@ if part == "팔":
     for i, (name, file) in enumerate(selected, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            if os.path.exists(file):
-                st.image(file, width=150)
-            else:
-                st.warning("이미지 없음")
+            render_img(file)
         with col2:
             st.markdown(f"**{i}. {name}**  \n3세트 / 15회")
 
@@ -149,10 +148,7 @@ elif part == "상체":
     for i, (name, file) in enumerate(final, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            if os.path.exists(file):
-                st.image(file, width=150)
-            else:
-                st.warning("이미지 없음")
+            render_img(file)
         with col2:
             st.markdown(f"**{i}. {name}**  \n{sets}세트 / {reps}")
 
@@ -170,10 +166,7 @@ elif part == "밀기":
     for i, (name, file) in enumerate(final, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            if os.path.exists(file):
-                st.image(file, width=150)
-            else:
-                st.warning("이미지 없음")
+            render_img(file)
         with col2:
             st.markdown(f"**{i}. {name}**  \n{sets}세트 / {reps}")
 
@@ -192,10 +185,7 @@ elif part == "당기기":
     for i, (name, file) in enumerate(final, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            if os.path.exists(file):
-                st.image(file, width=150)
-            else:
-                st.warning("이미지 없음")
+            render_img(file)
         with col2:
             st.markdown(f"**{i}. {name}**  \n{sets}세트 / {reps}")
 
@@ -213,7 +203,6 @@ else:
     random.shuffle(others)
     final = main_item + others[:num_exercises - len(main_item)]
 
-    # 메인운동 앞쪽에 배치 + 섞기
     first_two = final[:2]
     random.shuffle(first_two)
     final[:2] = first_two
@@ -223,14 +212,10 @@ else:
 
     for i, (name, file) in enumerate(final, 1):
         is_main = (name == main_name and main_name != "")
-        rep_text = "8-10회" if is_main else reps
+        rep_text = "8-10회" if is_main else reps  # 하이픈으로 표기
         prefix = "💥 " if is_main else ""
         col1, col2 = st.columns([1, 5])
         with col1:
-            if os.path.exists(file):
-                st.image(file, width=150)
-            else:
-                st.warning("이미지 없음")
+            render_img(file)
         with col2:
             st.markdown(f"**{i}. {prefix}{name}**  \n{sets}세트 / {rep_text}")
-
