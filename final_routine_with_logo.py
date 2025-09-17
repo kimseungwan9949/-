@@ -37,7 +37,7 @@ routine_db = {
         ("컨벤셔널 데드리프트", "컨벤셔널 데드리프트.PNG"),
         ("랫풀다운", "랫풀다운.PNG"),
         ("비하인드 랫풀다운", "비하인드 랫풀다운.PNG"),
-        ("케이블 풀다운", "케이블 풀डाउन.PNG") if os.path.exists("케이블 풀다운.PNG") else ("케이블 풀다운", "케이블 풀다운.PNG"),
+        ("케이블 풀다운", "케이블 풀다운.PNG"),
         ("인클라인 덤벨로우", "인클라인 덤벨로우.PNG"),
         ("티바로우", "티바로우.PNG"),
         ("원암 덤벨로우", "원암 덤벨로우.PNG"),
@@ -134,7 +134,6 @@ if part == "팔":
             st.markdown(f"**{i}. {name}**  \n3세트 / 15회")
 
 elif part == "상체":
-    # 등 1 + 어깨 1 + 가슴 1 + 이두 1 + 삼두 1 (완전 변동)
     back_ex = random.choice(routine_db["등"])
     shoulder_ex = random.choice(routine_db["어깨"])
     chest_ex = random.choice(routine_db["가슴"])
@@ -150,12 +149,14 @@ elif part == "상체":
     for i, (name, file) in enumerate(final, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            st.image(file, width=150) if os.path.exists(file) else st.warning("이미지 없음")
+            if os.path.exists(file):
+                st.image(file, width=150)
+            else:
+                st.warning("이미지 없음")
         with col2:
             st.markdown(f"**{i}. {name}**  \n{sets}세트 / {reps}")
 
 elif part == "밀기":
-    # 가슴 2 + 어깨 2 + 삼두 1 (완전 변동)
     chest = random.sample(routine_db["가슴"], 2)
     shoulder = random.sample(routine_db["어깨"], 2)
     triceps = random.choice(arms_db["삼두"])
@@ -169,12 +170,14 @@ elif part == "밀기":
     for i, (name, file) in enumerate(final, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            st.image(file, width=150) if os.path.exists(file) else st.warning("이미지 없음")
+            if os.path.exists(file):
+                st.image(file, width=150)
+            else:
+                st.warning("이미지 없음")
         with col2:
             st.markdown(f"**{i}. {name}**  \n{sets}세트 / {reps}")
 
 elif part == "당기기":
-    # 등 4 + 이두 1 (완전 변동)
     pulls = routine_db["등"][:]
     random.shuffle(pulls)
     selected_pulls = pulls[:4]
@@ -189,12 +192,14 @@ elif part == "당기기":
     for i, (name, file) in enumerate(final, 1):
         col1, col2 = st.columns([1, 5])
         with col1:
-            st.image(file, width=150) if os.path.exists(file) else st.warning("이미지 없음")
+            if os.path.exists(file):
+                st.image(file, width=150)
+            else:
+                st.warning("이미지 없음")
         with col2:
             st.markdown(f"**{i}. {name}**  \n{sets}세트 / {reps}")
 
 else:
-    # 기본 로직 (경력 반영 + 메인운동 강조)
     experience = st.selectbox("운동 경력", ["1개월~1년 미만", "1년 이상"], key="exp_select")
     if experience == "1개월~1년 미만":
         num_exercises = 4; reps = "15회"; sets = 4
@@ -208,7 +213,7 @@ else:
     random.shuffle(others)
     final = main_item + others[:num_exercises - len(main_item)]
 
-    # 메인운동이 항상 1~2번째에 오도록 '앞 2개만' 섞되, 실제 리스트에 반영
+    # 메인운동 앞쪽에 배치 + 섞기
     first_two = final[:2]
     random.shuffle(first_two)
     final[:2] = first_two
@@ -218,10 +223,13 @@ else:
 
     for i, (name, file) in enumerate(final, 1):
         is_main = (name == main_name and main_name != "")
-        rep_text = "8~10회" if is_main else reps
+        rep_text = "8-10회" if is_main else reps  # <- 하이픈으로 수정
         prefix = "💥 " if is_main else ""
         col1, col2 = st.columns([1, 5])
         with col1:
-            st.image(file, width=150) if os.path.exists(file) else st.warning("이미지 없음")
+            if os.path.exists(file):
+                st.image(file, width=150)
+            else:
+                st.warning("이미지 없음")
         with col2:
             st.markdown(f"**{i}. {prefix}{name}**  \n{sets}세트 / {rep_text}")
