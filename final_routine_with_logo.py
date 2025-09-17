@@ -223,7 +223,7 @@ else:
 
     for i, (name, file) in enumerate(final, 1):
         is_main = (name == main_name and main_name != "")
-        rep_text = "8-10회" if is_main else reps  # <- 하이픈으로 수정
+        rep_text = "8-10회" if is_main else reps
         prefix = "💥 " if is_main else ""
         col1, col2 = st.columns([1, 5])
         with col1:
@@ -233,3 +233,4 @@ else:
                 st.warning("이미지 없음")
         with col2:
             st.markdown(f"**{i}. {prefix}{name}**  \n{sets}세트 / {rep_text}")
+
